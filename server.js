@@ -49,7 +49,7 @@ async function sendVkMessage(userId, message) {
       user_id: userId,
       message: message,
       random_id: Math.floor(Math.random() * 1000000),
-      access_token: process.env.VK_TOKEN,
+      access_token: vk1.a.t7T_MTYd9rfeM2oqJfuyUViRQpApOLU7-HeHnpZllUb-gTaK8XvwUCzOAOEKugQF9QPaRpsueDOZhie76Ej3R9YgJelJkUwzNdgipVhbU6bPBhixKWbrrfOJjAFrzpiV6diyvigBmr05nTeTkZKpqYGthXygoosgdC1HoOkTCCSPlDY11DjvqBY1oKZlAeI4po8C8In35wiVk30NbwV0kQ,
       v: '5.131'
     });
     console.log('VK API ответ:', JSON.stringify(response.data));
