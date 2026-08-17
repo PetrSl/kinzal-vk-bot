@@ -6,7 +6,7 @@ require('dotenv').config();
 const app = express();
 app.use(express.json());
 
-// Твой токен прямо здесь, чтобы исключить проблемы с переменными окружения
+// Вставь сюда свой токен, начинается с vk1.a...
 const HARDCODED_TOKEN = 'vk1.a.t7T_MTYd9rfeM2oqJfuyUViRQpApOLU7-HeHnpZllUb-gTaK8XvwUCzOAOEKugQF9QPaRpsueDOZhie76Ej3R9YgJelJkUwzNdgipVhbU6bPBhixKWbrrfOJjAFrzpiV6diyvigBmr05nTeTkZKpqYGthXygoosgdC1HoOkTCCSPlDY11DjvqBY1oKZlAeI4po8C8In35wiVk30NbwV0kQ';
 
 app.get('/', (req, res) => res.send('KinZal VK Bot is running'));
@@ -18,7 +18,7 @@ async function getBusyDates() {
       const data = ical.parseICS(response.data);
       const busyDates = new Set();
       const today = new Date();
-      today.setHours(0,0,0,0);
+      today.setHours(0, 0, 0, 0);
       const thirtyDaysLater = new Date(today);
       thirtyDaysLater.setDate(thirtyDaysLater.getDate() + 30);
 
@@ -29,7 +29,7 @@ async function getBusyDates() {
           for (let d = new Date(start); d < end; d.setDate(d.getDate() + 1)) {
             const current = new Date(d);
             if (current >= today && current <= thirtyDaysLater) {
-              busyDates.add(current.toISOString().slice(0,10));
+              busyDates.add(current.toISOString().slice(0, 10));
             }
           }
         }
@@ -44,7 +44,6 @@ async function getBusyDates() {
   }
 }
 
-// Единственная функция отправки сообщения
 async function sendVkMessage(userId, message) {
   try {
     const response = await axios.post('https://api.vk.com/method/messages.send', {
@@ -64,6 +63,7 @@ app.post('/callback', (req, res) => {
   const { type, secret, object } = req.body;
 
   if (secret !== process.env.SECRET_KEY) {
+    console.error('Неверный секретный ключ');
     return res.status(403).send('Invalid secret');
   }
 
@@ -90,10 +90,10 @@ app.post('/callback', (req, res) => {
           for (let i = 0; i < 30; i++) {
             const d = new Date(today);
             d.setDate(d.getDate() + i);
-            const dateStr = d.toISOString().slice(0,10);
+            const dateStr = d.toISOString().slice(0, 10);
             const isBusy = busy.includes(dateStr);
-            const day = d.getDate().toString().padStart(2,'0');
-            const month = (d.getMonth()+1).toString().padStart(2,'0');
+            const day = d.getDate().toString().padStart(2, '0');
+            const month = (d.getMonth() + 1).toString().padStart(2, '0');
             responseText += `${isBusy ? '❌' : '✅'} ${day}.${month}\n`;
           }
           responseText += '\nЧтобы забронировать, напишите "Хочу [дата]" и я передам хозяину.';
