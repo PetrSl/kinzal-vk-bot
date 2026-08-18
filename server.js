@@ -46,6 +46,9 @@ async function getBusyDates() {
 
 async function sendVkMessage(userId, message) {
   try {
+    // Диагностическая строка: показывает первые 5 символов токена
+    console.log('Токен для отправки:', HARDCODED_TOKEN.slice(0, 5));
+
     const response = await axios.post('https://api.vk.com/method/messages.send', {
       user_id: userId,
       message: message,
