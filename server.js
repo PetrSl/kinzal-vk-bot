@@ -6,9 +6,6 @@ require('dotenv').config();
 const app = express();
 app.use(express.json());
 
-// Вставь сюда свой токен, начинается с vk1.a...
-const HARDCODED_TOKEN = 'vk1.a.t7T_MTYd9rfeM2oqJfuyUViRQpApOLU7-HeHnpZllUb-gTaK8XvwUCzOAOEKugQF9QPaRpsueDOZhie76Ej3R9YgJelJkUwzNdgipVhbU6bPBhixKWbrrfOJjAFrzpiV6diyvigBmr05nTeTkZKpqYGthXygoosgdC1HoOkTCCSPlDY11DjvqBY1oKZlAeI4po8C8In35wiVk30NbwV0kQ';
-
 app.get('/', (req, res) => res.send('KinZal VK Bot is running'));
 
 async function getBusyDates() {
@@ -46,14 +43,14 @@ async function getBusyDates() {
 
 async function sendVkMessage(userId, message) {
   try {
-    // Диагностическая строка: показывает первые 5 символов токена
-    console.log('Токен для отправки:', HARDCODED_TOKEN.slice(0, 5));
+    // Диагностическая строка: покажет первые символы токена из переменной окружения
+    console.log('Токен для отправки:', process.env.VK_TOKEN ? process.env.VK_TOKEN.slice(0, 5) : 'ПУСТО');
 
     const params = new URLSearchParams({
       user_id: userId,
       message: message,
       random_id: Math.floor(Math.random() * 1000000),
-      access_token: HARDCODED_TOKEN,
+      access_token: process.env.VK_TOKEN,
       v: '5.131'
     });
 
