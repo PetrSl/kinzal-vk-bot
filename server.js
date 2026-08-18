@@ -43,9 +43,6 @@ async function getBusyDates() {
 
 async function sendVkMessage(userId, message) {
   try {
-    // Диагностическая строка: покажет первые символы токена из переменной окружения
-    console.log('Токен для отправки:', process.env.VK_TOKEN ? process.env.VK_TOKEN.slice(0, 5) : 'ПУСТО');
-
     const params = new URLSearchParams({
       user_id: userId,
       message: message,
@@ -53,11 +50,9 @@ async function sendVkMessage(userId, message) {
       access_token: process.env.VK_TOKEN,
       v: '5.131'
     });
-
     const response = await axios.post('https://api.vk.com/method/messages.send', params, {
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     });
-
     console.log('VK API ответ:', JSON.stringify(response.data));
   } catch (error) {
     console.error('Ошибка отправки VK:', error.response ? JSON.stringify(error.response.data) : error.message);
@@ -107,8 +102,15 @@ app.post('/callback', (req, res) => {
       }).catch(err => console.error('Ошибка обработки дат:', err));
     }
     else if (text.startsWith('хочу')) {
+      // Ответ гостю
       sendVkMessage(userId, 'Спасибо! Я передал запрос хозяину, он скоро свяжется с вами.');
-      console.log(`Заявка от ${userId}: ${text}`);
+      // Уведомление хозяину
+      const ownerId = process.env.OWNER_ID;
+      if (ownerId) {
+        sendVkMessage(ownerId, `🔔 Новая заявка от @id${userId} (id: ${userId}): ${text}`);
+      } else {
+        console.log('OWNER_ID не задан, заявка не отправлена');
+      }
     }
     else {
       sendVkMessage(userId, 'Привет! Я бот Кинозала 4K. Напишите "Даты" для проверки занятости, или "Хочу [дата]" для брони.');
