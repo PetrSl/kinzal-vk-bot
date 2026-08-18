@@ -49,13 +49,18 @@ async function sendVkMessage(userId, message) {
     // Диагностическая строка: показывает первые 5 символов токена
     console.log('Токен для отправки:', HARDCODED_TOKEN.slice(0, 5));
 
-    const response = await axios.post('https://api.vk.com/method/messages.send', {
+    const params = new URLSearchParams({
       user_id: userId,
       message: message,
       random_id: Math.floor(Math.random() * 1000000),
       access_token: HARDCODED_TOKEN,
       v: '5.131'
     });
+
+    const response = await axios.post('https://api.vk.com/method/messages.send', params, {
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+    });
+
     console.log('VK API ответ:', JSON.stringify(response.data));
   } catch (error) {
     console.error('Ошибка отправки VK:', error.response ? JSON.stringify(error.response.data) : error.message);
